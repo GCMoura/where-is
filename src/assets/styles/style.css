@@ -1,0 +1,59 @@
+:root {
+  --background: #CCC;
+  --font-white: #FFF;
+  --font-black: #111;
+  --blue-light: #215992;
+  --blue-dark: #0e2d4d;
+  --green-light: #00916e;
+  --green-dark: #18473c;
+  --orange-light: #FF7040; 
+  --orange-dark: #d83d09;
+  
+  
+  --white: #e6f1ff;
+  --light-slate: #ccd6f6;
+  --shadow-slate: #a8b2d1;
+  --slate: #8892b0;
+  --lightest-navy: #303C55;
+  --light-navy: #172a45;
+  --navy: #0a192f;
+  --dark-navy: #020c1b;
+  --shadow-orange:  #fcc7b6;
+  --button-red-light: #dd614a;
+  --button-red: #ca3318;
+  --button-red-dark: #8b2c1b;
+  --yelow-dark: #92620a;  
+  --yelow-light: #fcab10;
+  --input-border-line: #222;
+  
+  font-size: 60%;
+
+  --font-sans: "Calibre","San Francisco","SF Pro Text",sans-serif;
+  --font-mono: "SF Mono","Fira Code","Fira Mono","Roboto Mono",monospace;
+}
+*{ 
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100vh;
+}
+
+body {
+  background: var(--background);
+}
+
+#root{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 700px){
+  :root {
+    font-size: 62.5%;
+  }
+}
