@@ -12,7 +12,12 @@ function Home(){
   const [user, setUser] = useState('')
 
   function handleGameButton(){
-    history.push(`game/${user}`)
+    history.push({
+      pathname: `game/${user}`,
+      state: {
+        detail: user
+      }
+    })
   }
 
   function handleRankingButton(){
@@ -27,6 +32,7 @@ function Home(){
         name='user'
         value={user}
         placeholder="Digite seu nome" 
+        required
         onChange={event => { setUser(event.target.value) }}>
       </Input>
       <br/>
