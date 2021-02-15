@@ -7,8 +7,7 @@ function Ranking(){
 
   const history = useHistory()
 
-  const user = history.location.state.detail
-
+  
   function handleHomeButton(){
     history.push('/')
   }
@@ -16,8 +15,7 @@ function Ranking(){
   return(
     <div>
       <h1>Ranking Page</h1>
-      <h2> {user} </h2>
-      
+            
       <HomeButton onClick={handleHomeButton} >
         Home
       </HomeButton>

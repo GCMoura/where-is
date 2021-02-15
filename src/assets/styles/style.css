@@ -4,10 +4,13 @@
   --font-black: #111;
   --blue-light: #215992;
   --blue-dark: #0e2d4d;
+  --navy-dark: #020c1b;
   --green-light: #00916e;
   --green-dark: #18473c;
   --orange-light: #FF7040; 
   --orange-dark: #d83d09;
+  --red-light: #d3290c;
+  --red-dark: #8f1d08;
   
   
   --white: #e6f1ff;
@@ -17,11 +20,8 @@
   --lightest-navy: #303C55;
   --light-navy: #172a45;
   --navy: #0a192f;
-  --dark-navy: #020c1b;
   --shadow-orange:  #fcc7b6;
   --button-red-light: #dd614a;
-  --button-red: #ca3318;
-  --button-red-dark: #8b2c1b;
   --yelow-dark: #92620a;  
   --yelow-light: #fcab10;
   --input-border-line: #222;
@@ -56,6 +56,10 @@ body {
   height: 550px;
   width: 648px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (min-width: 700px){

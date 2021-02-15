@@ -6,6 +6,10 @@ import returnCoordsAndCapitals from '../../utils/coordsAndCapitals'
 import createCircle from '../../utils/createCircle'
 
 import Section from '../../components/Section/Section'
+import P from '../../components/Paragraph/Paragraph'
+import Result from '../../components/Result/Result'
+import RankingButton from '../../components/Buttons/RankingButton'
+import RestartButton from '../../components/Buttons/RestartButton'
 
 function Game(){
 
@@ -18,10 +22,11 @@ function Game(){
   const [distanceKm, setDistanceKm] = useState(0)
   const [capital, setCapital] = useState('')
   const [points, setPoints] = useState(0)
+  const [gameOver, setGameOver] = useState(null)
 
   var map = null
 
-  let capitalAndCoord = null
+  var capitalAndCoord = null
 
   useEffect(() => {
     
@@ -80,69 +85,72 @@ function Game(){
         setCapital(capitalAndCoord.capital)
   
       } else {
-        console.log('game over')
-        map.remove()
-        map = L.map('mapid', {
-          center: [-15.613779,-51.855469],
-          zoomSnap: 0.1,
-          zoom: 4.6,
-          maxZoom: 4.6,
-          minZoom: 4.6,
-          doubleClickZoom: false
-        })
-
-        L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-            subdomains:['mt0','mt1','mt2','mt3'],
-            opacity: 0.5
-        }).addTo(map);
-
-        L.marker([-15.613779,-51.855469])
-          .addTo(map)
-
-        L.popup({
-          closeButton: false
-        })
-          .setLatLng([-13.613779,-51.855469])
-          .setContent(`${user}, você fez ${points} pontos`)
-          .openOn(map);
-
         setTimeout(() => {
-          window.location.reload(false)
-        }, 2000);
+          console.log('game over')
+          setGameOver(true)
+          map.remove()
+        }, 3200);
       }
     })  
   }
   
   //pontuação
   useEffect(() => {
-    switch (distanceKm) {
-      case distanceKm > 0 && distanceKm <= 10:
+    
+      if(distanceKm > 0 && distanceKm <= 10){
         setPoints(points + 200)
-        break;
-      case distanceKm > 10 && distanceKm <= 50:
+      } else if(distanceKm > 10 && distanceKm <= 50){
         setPoints(points + 100)
-        break;
-      case distanceKm > 50 && distanceKm <= 100:
+      } else if(distanceKm > 50 && distanceKm <= 100){
         setPoints(points + 50)
-        break;
-      case distanceKm > 100 && distanceKm <= 200:
+      } else if(distanceKm > 100 && distanceKm <= 200) {
         setPoints(points + 25)
-      break;
-      case distanceKm > 200:
+      } else {
         setPoints(points + 0)
-      break;
-    }
+      }
   }, [distanceKm])  
+
+  function HandleGameOver(props){
+    
+    const isGameOver = props.isGameOver
+    if(isGameOver){
+      return (
+        <div>
+          <Result> Total de Pontos: {points} </Result>
+          <RankingButton onClick={handleRankingButton} >
+            Ranking
+          </RankingButton>
+          <br/>
+          <RestartButton onClick={handleRestartButton} >
+            Restart
+          </RestartButton>
+        </div>
+      )
+    }
+    return true
+  }
+
+  function handleRankingButton(){
+    let path = `/ranking/${user}`
+    history.push(path)
+  }
+
+  function handleRestartButton(){
+    window.location.reload(false)
+  }
   
   return(
     <div> 
       <Section>
-        <h2>Onde fica: {capital.toUpperCase()} ?</h2>
-        <h2>Distância: {distanceKm} km</h2>
-        <h2>Pontos: {points}</h2>
+        <P>Onde fica: {capital.toUpperCase()} ?</P>
+        <P>Distância: {distanceKm} km</P>
+        <P>Pontos: {points}</P>
       </Section>
 
-      <div id="mapid"></div>
+      <div id="mapid">     
+        <HandleGameOver isGameOver={gameOver} />  
+      </div>
+
       
 
     </div>
