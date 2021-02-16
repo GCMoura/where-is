@@ -29,6 +29,11 @@ function Game(){
   var capitalAndCoord = null
 
   useEffect(() => {
+
+    const root = document.querySelector('#root')
+    const div = document.createElement('div')
+    div.setAttribute('id', 'mapid')
+    root.appendChild(div)
     
     map = L.map('mapid', {
       center: [-15.613779,-51.855469],
@@ -36,6 +41,7 @@ function Game(){
       zoom: 4.6,
       maxZoom: 4.6,
       minZoom: 4.6,
+      inertia: true,
       doubleClickZoom: false
     })
      
@@ -55,7 +61,8 @@ function Game(){
   function userClick(map){
 
     map.on('click', (event) => {
-
+      
+      console.log('click')
       round++
 
       const chosenUserLocation = L.marker([event.latlng.lat, event.latlng.lng]).addTo(map)
@@ -97,13 +104,13 @@ function Game(){
   //pontuação
   useEffect(() => {
     
-      if(distanceKm > 0 && distanceKm <= 10){
+      if(distanceKm > 0 && distanceKm <= 50){
         setPoints(points + 200)
-      } else if(distanceKm > 10 && distanceKm <= 50){
-        setPoints(points + 100)
       } else if(distanceKm > 50 && distanceKm <= 100){
+        setPoints(points + 100)
+      } else if(distanceKm > 100 && distanceKm <= 150){
         setPoints(points + 50)
-      } else if(distanceKm > 100 && distanceKm <= 200) {
+      } else if(distanceKm > 150 && distanceKm <= 200) {
         setPoints(points + 25)
       } else {
         setPoints(points + 0)
@@ -114,6 +121,8 @@ function Game(){
     
     const isGameOver = props.isGameOver
     if(isGameOver){
+      document.querySelector('#mapid').style.display = 'none'
+      document.querySelector('#section').style.display = 'none'
       return (
         <div>
           <Result> Total de Pontos: {points} </Result>
@@ -141,18 +150,15 @@ function Game(){
   
   return(
     <div> 
-      <Section>
+      <Section id="section">
         <P>Onde fica: {capital.toUpperCase()} ?</P>
         <P>Distância: {distanceKm} km</P>
         <P>Pontos: {points}</P>
       </Section>
 
-      <div id="mapid">     
-        <HandleGameOver isGameOver={gameOver} />  
-      </div>
-
-      
-
+      {/* <div id="mapid">      */}
+      <HandleGameOver isGameOver={gameOver} />  
+      {/* </div> */}
     </div>
   )
 }

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import buildAlert from '../../utils/buildAlert'
-
 import Input from '../../components/Input/Input'
 import GameButton from '../../components/Buttons/GameButton'
 import RankingButton from '../../components/Buttons/RankingButton'
+import Title from '../../components/Title/Title'
+import P from '../../components/Paragraph/Paragraph'
+import Form from '../../components/Form/Form'
 
 function Home(){
 
@@ -13,7 +14,7 @@ function Home(){
 
   const [user, setUser] = useState('')
 
-  function handleGameButton(){
+  function handleSubmit(){
     if(user){
       history.push({
         pathname: `game/${user}`,
@@ -21,8 +22,6 @@ function Home(){
           detail: user
         }
       })  
-    } else {
-      buildAlert('Por favor insira o nome do jogador', '#8f1d08')
     }
   }
 
@@ -32,23 +31,25 @@ function Home(){
 
   return(
     <div>
-      <h1>Home Page</h1>
-      
-      <Input 
-        name='user'
-        value={user}
-        placeholder="Digite seu nome" 
-        onChange={event => { setUser(event.target.value) }}>
-      </Input>
-      <br/>
-      <GameButton onClick={handleGameButton} >
-        Game
-      </GameButton>
-      <br/>    
-      <RankingButton onClick={handleRankingButton} >
-        Ranking
-      </RankingButton>
-      
+      <Title>Onde Fica?</Title>
+      <P>Descubra a localização das capitais brasileiras</P> 
+      <Form onSubmit={handleSubmit}>
+        <Input 
+          name='user'
+          value={user}
+          placeholder="Digite seu nome" 
+          required
+          onChange={event => { setUser(event.target.value) }}>
+        </Input>
+        <br/>
+        <GameButton type="submit">
+          Capitais Brasileiras
+        </GameButton>
+        <br/>    
+        <RankingButton onClick={handleRankingButton} >
+          Ranking
+        </RankingButton>
+      </Form>
     </div>
   )
 }
