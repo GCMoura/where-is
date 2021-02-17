@@ -10,7 +10,7 @@ const Section = styled.section `
   font-size: 20px;
 
   @media(min-width: 700px) {
-    height: 50px;
+    height: 60px;
     width: 650px;
     flex-direction: row;
     align-items: center;
