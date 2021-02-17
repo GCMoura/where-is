@@ -10,10 +10,9 @@ const Section = styled.section `
   font-size: 20px;
 
   @media(min-width: 700px) {
-    height: 50px;
-    width: 650px;
+    height: 60px;
+    width: 100vw;
     flex-direction: row;
-    align-items: center;
     justify-content: space-evenly;
   }
 `

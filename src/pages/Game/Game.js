@@ -36,12 +36,11 @@ function Game(){
     root.appendChild(div)
     
     map = L.map('mapid', {
-      center: [-15.613779,-51.855469],
+      center: [-14.613779, -52.855469],
       zoomSnap: 0.1,
       zoom: 4.6,
       maxZoom: 4.6,
       minZoom: 4.6,
-      inertia: true,
       doubleClickZoom: false
     })
      
@@ -56,13 +55,11 @@ function Game(){
     userClick(map)
 
   }, [])
-
   
   function userClick(map){
 
     map.on('click', (event) => {
-      
-      console.log('click')
+
       round++
 
       const chosenUserLocation = L.marker([event.latlng.lat, event.latlng.lng]).addTo(map)
@@ -88,9 +85,9 @@ function Game(){
       if(round < 2){
         
         capitalAndCoord = returnCoordsAndCapitals()
-
-        setCapital(capitalAndCoord.capital)
   
+        setCapital(capitalAndCoord.capital)
+        
       } else {
         setTimeout(() => {
           console.log('game over')
@@ -98,6 +95,7 @@ function Game(){
           map.remove()
         }, 3200);
       }
+
     })  
   }
   
@@ -155,10 +153,10 @@ function Game(){
         <P>Distância: {distanceKm} km</P>
         <P>Pontos: {points}</P>
       </Section>
+      
 
-      {/* <div id="mapid">      */}
       <HandleGameOver isGameOver={gameOver} />  
-      {/* </div> */}
+      
     </div>
   )
 }
