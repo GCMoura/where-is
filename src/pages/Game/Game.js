@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import L from 'leaflet'
+import firebase from '../../config/config'
 
 import returnCoordsAndCapitals from '../../utils/coordsAndCapitals'
 import createCircle from '../../utils/createCircle'
@@ -83,25 +84,20 @@ function Game(){
       }, 3000);
 
       if(round < 2){
-        
         capitalAndCoord = returnCoordsAndCapitals()
-  
         setCapital(capitalAndCoord.capital)
-        
       } else {
         setTimeout(() => {
-          console.log('game over')
+          console.log('game-over')
           setGameOver(true)
           map.remove()
         }, 3200);
       }
-
     })  
   }
   
   //pontuação
   useEffect(() => {
-    
       if(distanceKm > 0 && distanceKm <= 50){
         setPoints(points + 200)
       } else if(distanceKm > 50 && distanceKm <= 100){
@@ -113,14 +109,40 @@ function Game(){
       } else {
         setPoints(points + 0)
       }
+      console.log('controle de pontos')
   }, [distanceKm])  
 
+  // function createRanking(data){
+  //   firebase.database().ref('ranking').push(data)
+  //     .then(() => {
+  //       console.log('Ranking incluído com sucesso')
+  //     })
+  //     .catch(error => {
+  //       console.log(error)
+  //     })
+  // }
+
   function HandleGameOver(props){
-    
     const isGameOver = props.isGameOver
     if(isGameOver){
       document.querySelector('#mapid').style.display = 'none'
       document.querySelector('#section').style.display = 'none'
+
+      const date = new Date()      
+      const data = {
+        user,
+        points,
+        date: `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+      }
+      //createRanking(data)
+      firebase.database().ref('ranking').push(data)
+      .then(() => {
+        console.log('Ranking incluído com sucesso')
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
       return (
         <div>
           <Result> Total de Pontos: {points} </Result>
@@ -134,7 +156,7 @@ function Game(){
         </div>
       )
     }
-    return true
+    return false
   }
 
   function handleRankingButton(){
@@ -154,9 +176,7 @@ function Game(){
         <P>Pontos: {points}</P>
       </Section>
       
-
       <HandleGameOver isGameOver={gameOver} />  
-      
     </div>
   )
 }
