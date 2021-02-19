@@ -14,10 +14,14 @@ import RestartButton from '../../components/Buttons/RestartButton'
 
 function Game(){
 
+  const baseURL = window.location.hostname.includes('localhost')
+  ? 'http://localhost:3000/game/'
+  : 'https://mybookcaseproject.web.app/register/'
+
   const history = useHistory()
 
-  const user = history.location.state.detail
-
+  const user = window.location.href.toString().replace(baseURL, '')
+  
   var round = 0
 
   const [distanceKm, setDistanceKm] = useState(0)
@@ -30,7 +34,6 @@ function Game(){
   var capitalAndCoord = null
 
   useEffect(() => {
-
     const root = document.querySelector('#root')
     const div = document.createElement('div')
     div.setAttribute('id', 'mapid')
@@ -87,6 +90,7 @@ function Game(){
         capitalAndCoord = returnCoordsAndCapitals()
         setCapital(capitalAndCoord.capital)
       } else {
+        
         setTimeout(() => {
           console.log('game-over')
           setGameOver(true)
@@ -109,18 +113,26 @@ function Game(){
       } else {
         setPoints(points + 0)
       }
-      console.log('controle de pontos')
-  }, [distanceKm])  
+  }, [distanceKm]) 
+  
+  function updateUserPoints(points){
+    let db
+    let id
+    firebase.database().ref('ranking').on('value', (snapshot) => {
+      snapshot.forEach(item => {
+        if(item.val().user === user){
+          db = item.ref.path.pieces_[0]
+          id = item.ref.path.pieces_[1]
+        }
+      })
+      return firebase.database().ref().child(db + '/' + id).update({
+        points: points 
+      }).catch(error => {
+        alert(error)
+      })
+    })
 
-  // function createRanking(data){
-  //   firebase.database().ref('ranking').push(data)
-  //     .then(() => {
-  //       console.log('Ranking incluído com sucesso')
-  //     })
-  //     .catch(error => {
-  //       console.log(error)
-  //     })
-  // }
+  }
 
   function HandleGameOver(props){
     const isGameOver = props.isGameOver
@@ -128,20 +140,7 @@ function Game(){
       document.querySelector('#mapid').style.display = 'none'
       document.querySelector('#section').style.display = 'none'
 
-      const date = new Date()      
-      const data = {
-        user,
-        points,
-        date: `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
-      }
-      //createRanking(data)
-      firebase.database().ref('ranking').push(data)
-      .then(() => {
-        console.log('Ranking incluído com sucesso')
-      })
-      .catch(error => {
-        console.log(error)
-      })
+      updateUserPoints(points)
 
       return (
         <div>

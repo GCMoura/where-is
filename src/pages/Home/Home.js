@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import firebase from '../../config/config'
 
 import Input from '../../components/Input/Input'
 import GameButton from '../../components/Buttons/GameButton'
@@ -14,13 +15,31 @@ function Home(){
 
   const [user, setUser] = useState('')
 
+  function createUserRanking(date, time){
+    const data = {
+      user: `${user}-${time}`,
+      points: 0,
+      date: `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+    }
+    
+    return firebase.database().ref('ranking').push(data)
+      .then(() => {
+        console.log('Ranking incluído com sucesso')
+      })
+      .catch(error => {
+        alert(error)
+      })
+  }
+
   function handleSubmit(){
     if(user){
+      const date = new Date()   
+      const time = date.getTime() 
+
+      createUserRanking(date, time)
+      
       history.push({
-        pathname: `game/${user}`,
-        state: {
-          detail: user
-        }
+        pathname: `game/${user}-${time}`
       })  
     }
   }
