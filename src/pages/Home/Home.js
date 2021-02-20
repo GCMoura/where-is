@@ -58,6 +58,7 @@ function Home(){
           value={user}
           placeholder="Digite seu nome" 
           required
+          maxLength='10'
           onChange={event => { setUser(event.target.value) }}>
         </Input>
         <br/>

@@ -3,6 +3,12 @@ import { useHistory } from 'react-router-dom'
 import firebase from '../../config/config'
 
 import HomeButton from '../../components/Buttons/HomeButton'
+import SubTitle from '../../components/Ranking/SubTitle'
+import InputSubTitle from '../../components/Input/InputSubTitle'
+import InputRanking from '../../components/Input/InputFirstPlayer'
+import Title from '../../components/Title/Title'
+import FirstPlayer from '../../components/Ranking/FirstPlayer'
+import Players from '../../components/Ranking/Players'
 
 function Ranking(){
 
@@ -15,63 +21,130 @@ function Ranking(){
   const history = useHistory()
 
   const [first, setFirst] = useState([])
-  const [second, setSecond] = useState([])
-  const [third, setThird] = useState([])
-
+  const [players, setPlayers] = useState([])
+  
   useEffect(() => {
-    let points = []
+    let larger = 0
+    let numberOfPlayers = 7
+    let playersWithEqualPoints = 0
+    let playersArray = []
 
     firebase.database().ref('ranking').on('value', (snapshot) => {
       snapshot.forEach(item => {
-        points.push(item.val().points)
-      })
-    })
-    
-    // firebase.database().ref('ranking').on('value', (snapshot) => {
-    //   snapshot.forEach(item => {
-    //     if(item.val().user === user){
-    //       db = item.ref.path.pieces_[0]
-    //       id = item.ref.path.pieces_[1]
-    //     }
-    //   })
-    // })
-    //console.log(firebase.database().ref('ranking').orderByKey())
-
-    points.sort()
-    points.reverse()
-
-    showRanking(points)
-    
-  }, [])
-
-  function showRanking(points){
-    firebase.database().ref('ranking').on('value', (snapshot) => { 
-      snapshot.forEach(item => {
-        if(points[0] === item.val().points){
-          setFirst([
-            item.val().user,
-            item.val().date,
-            item.val().points
-          ])
+        if(item.val().points > larger){
+          larger = item.val().points
         }
       })
-    })
-  }
+      
+      firebase.database().ref('ranking').on('value', (snapshot) => { 
+        snapshot.forEach(item => {
+          let userName = userNameManipulation(item.val().user)
+          if(item.val().points === larger && playersWithEqualPoints === 0){
+            setFirst([
+              userName,
+              item.val().date,
+              item.val().points
+            ])
+            playersWithEqualPoints++
+          } else {
+            let newPlayer = [userName, item.val().date, item.val().points]
+            playersArray.push(newPlayer)
+          }
+        })
+        playersArray.reverse()
 
+        let newArray = playersArray.slice(0, numberOfPlayers)
+
+        setPlayers(newArray)
+      })
+    })
+
+  }, [])
+
+  function userNameManipulation(name){
+    let index = name.lastIndexOf('-')
+    name = name.slice(0, index)
+    return name
+  }
+  
   function handleHomeButton(){
+    document.getElementById('mapid').outerHTML = ''
     history.push('/')
   }
 
   return(
-    <div>
-      <h1>Ranking Page</h1>
-      <h1>{first}</h1>
-            
+    <>
+      <Title>Ranking</Title>
+      <SubTitle> 
+        <InputSubTitle 
+          type="text" 
+          // size="7" 
+          value='Jogador' 
+          readOnly
+        />        
+        <InputSubTitle 
+          type="text" 
+          // size="7" 
+          value='Data'
+          readOnly 
+        /> 
+        <InputSubTitle 
+          type="text" 
+          // size="7" 
+          value='Pontos'
+          readOnly
+        /> 
+      </SubTitle>
+      <FirstPlayer> 
+        <InputRanking 
+          type="text" 
+          // size="7" 
+          value={first[0] || ''} 
+          readOnly
+        />        
+        <InputRanking 
+          type="text" 
+          // size="7" 
+          value={first[1] || ''}
+          readOnly 
+        /> 
+        <InputRanking 
+          type="text" 
+          // size="7" 
+          value={first[2] || ''} 
+          readOnly
+        /> 
+      </FirstPlayer>
+      {players.map((player, index) => {
+        return (
+          <Players key={index}>
+            <InputRanking  
+              type="text" 
+              // size="7" 
+              value={player[0]} 
+              readOnly
+            />        
+            <InputRanking 
+              type="text" 
+              // size="7" 
+              value={player[1]}
+              readOnly 
+            /> 
+            <InputRanking 
+              type="text" 
+              // size="7" 
+              value={player[2]} 
+              readOnly
+            /> 
+          </Players>
+          )
+      })} 
+                
       <HomeButton onClick={handleHomeButton} >
         Retornar à página principal
       </HomeButton>
       
-    </div>
+    </>
   )
 }
 

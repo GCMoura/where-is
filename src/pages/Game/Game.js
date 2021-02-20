@@ -21,24 +21,22 @@ function Game(){
   const history = useHistory()
 
   const user = window.location.href.toString().replace(baseURL, '')
-  
-  var round = 0
-
+    
   const [distanceKm, setDistanceKm] = useState(0)
   const [capital, setCapital] = useState('')
   const [points, setPoints] = useState(0)
   const [gameOver, setGameOver] = useState(null)
-
-  var map = null
-
-  var capitalAndCoord = null
+  
+  var round = 0
+  let map = null
+  let capitalAndCoord = null
 
   useEffect(() => {
     const root = document.querySelector('#root')
     const div = document.createElement('div')
     div.setAttribute('id', 'mapid')
     root.appendChild(div)
-    
+
     map = L.map('mapid', {
       center: [-14.613779, -52.855469],
       zoomSnap: 0.1,
@@ -67,16 +65,16 @@ function Game(){
       round++
 
       const chosenUserLocation = L.marker([event.latlng.lat, event.latlng.lng]).addTo(map)
-
-      const capitalChosen = L.marker(capitalAndCoord.coord).addTo(map)
-
+      
       const distance = map.distance(capitalAndCoord.coord, [event.latlng.lat, event.latlng.lng])
-  
+      
       setDistanceKm((distance / 1000).toFixed(2))
-
+      
       const distanceKm = (distance / 1000).toFixed(2)
-
+      
       let circle = createCircle(distanceKm, distance, event.latlng.lat, event.latlng.lng)
+      
+      const capitalChosen = L.marker(capitalAndCoord.coord).addTo(map)
 
       circle.addTo(map)
 
@@ -90,11 +88,10 @@ function Game(){
         capitalAndCoord = returnCoordsAndCapitals()
         setCapital(capitalAndCoord.capital)
       } else {
+        map.off()
         
         setTimeout(() => {
-          console.log('game-over')
           setGameOver(true)
-          map.remove()
         }, 3200);
       }
     })  
@@ -125,13 +122,16 @@ function Game(){
           id = item.ref.path.pieces_[1]
         }
       })
-      return firebase.database().ref().child(db + '/' + id).update({
+
+      firebase.database().ref().child(db + '/' + id).update({
         points: points 
-      }).catch(error => {
+      }).then(() => {
+        console.log('points - ', points)
+      })
+      .catch(error => {
         alert(error)
       })
     })
-
   }
 
   function HandleGameOver(props){
